@@ -13,7 +13,7 @@ class Contactlab_Template_Model_Resource_Newsletter_Subscriber_Collection extend
      */
     public function useQueue(Mage_Newsletter_Model_Queue $queue) {
         $this->getSelect()
-            ->join(array('link'=>$this->_queueLinkTable), "link.subscriber_id = main_table.subscriber_id", array('product_ids'))
+            ->join(array('link'=>$this->_queueLinkTable), "link.subscriber_id = main_table.subscriber_id", array('product_ids', 'total'))
             ->where("link.queue_id = ? ", $queue->getId());
         $this->_queueJoinedFlag = true;
         return $this;

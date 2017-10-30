@@ -30,11 +30,12 @@ class Contactlab_Template_Model_Newsletter_Processor_Filter_Cart_Products
         $collection->getSelect()->join(
             array('cart_items' => $cartItem),
                     'cart_items.quote_id = cart.entity_id and cart_items.parent_item_id is null',
-                        array('product_ids' => 'GROUP_CONCAT(concat(product_id, \'|\', qty, \'|\', item_id, \'|\', row_total_incl_tax, \'|\', quote_currency_code)'                        
+                        array('total' => 'cart.grand_total',
+                        		'product_ids' => 'GROUP_CONCAT(concat(product_id, \'|\', qty, \'|\', item_id, \'|\', row_total_incl_tax, \'|\', quote_currency_code)'                        
                             . ' ORDER BY row_total_incl_tax desc SEPARATOR \',\')'));
 
         $collection->getSelect()->group("$mainTable.$field");
-
+		Mage::log("".$collection->getSelect(), null, 'fra.log');
         return $collection;
     }
 

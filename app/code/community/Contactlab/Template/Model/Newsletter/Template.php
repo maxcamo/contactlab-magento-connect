@@ -96,6 +96,7 @@ class Contactlab_Template_Model_Newsletter_Template extends Mage_Newsletter_Mode
             $data['subscriber_id'] = $item->getSubscriberId();
             $data['customer_id'] = $item->getCustomerId();
             $data['product_ids'] = $item->getProductIds();
+            $data['total'] = $item->getTotal();
             $adapter->insert($resource->getTableName('newsletter/queue_link'), $data);
 
             $c++;
@@ -225,10 +226,36 @@ class Contactlab_Template_Model_Newsletter_Template extends Mage_Newsletter_Mode
      * @param string[] $item
      * @return string
      */
-    public function getPriceFor(Mage_Catalog_Model_Product $product, array $item, $storeId) {           
-    	return $this->getTemplateQueueProcessor($storeId)->getPriceFor($product->setStoreId($storeId), $item);
+    public function getPriceFor(Mage_Catalog_Model_Product $product, array $item, $storeId) {
+        return $this->getTemplateQueueProcessor($storeId)->getPriceFor($product, $item);
     }
 
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @param array $item
+     * @return string
+     */
+    public function getSpecialPriceFor(Mage_Catalog_Model_Product $product, array $item, $storeId) {
+    	return $this->getTemplateQueueProcessor($storeId)->getSpecialPriceFor($product->setStoreId($storeId), $item);
+    }
+    
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @param array $item
+     * @return string
+     */
+    public function getOldPriceFor(Mage_Catalog_Model_Product $product, array $item, $storeId) {
+    	return $this->getTemplateQueueProcessor($storeId)->getOldPriceFor($product->setStoreId($storeId), $item);
+    }
+    
+    /**
+     * @param $total
+     * @return string
+     */
+    public function getTotalCart($total, $storeId) {
+    	return $this->getTemplateQueueProcessor($storeId)->getTotalCart($total, $storeId);
+    }
+    
     /**
      * Send to all customers?
      * @param string $code

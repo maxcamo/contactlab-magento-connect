@@ -81,9 +81,49 @@ class Contactlab_Template_Model_Newsletter_Processor_Cart extends Contactlab_Tem
      * @param array $item
      * @return string
      */
-    public function getPriceFor(Mage_Catalog_Model_Product $product, array $item) 
+    public function getPriceFor(Mage_Catalog_Model_Product $product, array $item) {
+        return Mage::app()->getStore()->formatPrice(floatval($item[3]));
+    }
+    
+    /**
+     * Get special_price for.
+     * @param Mage_Catalog_Model_Product $product
+     * @param array $item
+     * @return string
+     */
+    public function getSpecialPriceFor(Mage_Catalog_Model_Product $product, array $item)
+    {
+    	$return = null;
+    	if($product->getSpecialPrice())
+    	{
+    		$store = Mage::getModel('core/store')->load($product->getStoreId());
+    		$return =  $store->formatPrice(floatval($product->getSpecialPrice()));
+    	}
+    	return $return;
+    }
+    
+    /**
+     * Get special_price for.
+     * @param Mage_Catalog_Model_Product $product
+     * @param array $item
+     * @return string
+     */
+    public function getOldPriceFor(Mage_Catalog_Model_Product $product, array $item)
     {
     	$store = Mage::getModel('core/store')->load($product->getStoreId());
-        return $store->formatPrice(floatval($item[3])); 
+    	return $store->formatPrice(floatval($product->getPrice()));
     }
+    
+    /**
+     * Get special_price for.
+     * @param Mage_Catalog_Model_Product $product
+     * @param array $item
+     * @return string
+     */
+    public function getTotalCart($total, $storeId)
+    {
+    	$store = Mage::getModel('core/store')->load($storeId);
+    	return $store->formatPrice(floatval($total));
+    }
+    
 }

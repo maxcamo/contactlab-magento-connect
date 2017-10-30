@@ -49,6 +49,9 @@ abstract class Contactlab_Template_Model_Newsletter_Template_Compiler_Abstract e
         $template->setTemplateText($templateText);
         $template->setTemplateStyles($templateStyles);
 
+        Mage::log(get_class($customer), null, 'fra.log');
+        Mage::log($customer->getData(), null, 'fra.log');
+        
         $productExplode = explode(',', $customer->getProductIds());
         $customer->setProductsNumber(count($productExplode));
 
@@ -88,20 +91,33 @@ abstract class Contactlab_Template_Model_Newsletter_Template_Compiler_Abstract e
             $productTemplate = Mage::getModel('core/email_template');
             $productTemplate->setType($isPlain ? Mage_Core_Model_Template::TYPE_TEXT : Mage_Core_Model_Template::TYPE_HTML);
             $productTemplate->setTemplateText($productTemplateText);
+            //$product = Mage::getModel('catalog/product')->load($product->getEntityId());
             $product->setQty($productQty);
             if ($this->hasProductImageWidth()) {
                 $product->setThumbnail($product->getThumbnailUrl($this->getProductImageWidth(), $this->getProductImageHeight()));
             }
             $qty = $this->formatQty($product);
+            
+            
+            Mage::log(get_class($templateObject), null, 'fra.log');
+            
             $productTemplateResult = $productTemplate->getProcessedTemplate(
-                array('product' => $product, 'qty' => $qty,
-                    'price' => $templateObject->getPriceFor($product, $item, $this->getStoreId())));
+                array(
+                		'product' => $product, 
+                		'qty' => $qty,
+                    	'price' => $templateObject->getPriceFor($product, $item, $this->getStoreId()),
+                		'special_price' => $templateObject->getSpecialPriceFor($product, $item, $this->getStoreId()),
+                		'old_price' => $templateObject->getOldPriceFor($product, $item, $this->getStoreId())
+                		
+                )
+            );
             $counter++;
             $productsObject->setData('product' . $counter, $productTemplateResult);
         }
         return $template->getProcessedTemplate(array(
             'subscriber' => $customer,
-            'products' => $productsObject
+            'products' => $productsObject,
+        	'total'	=> $templateObject->getTotalCart($customer->getTotal(), $this->getStoreId())
         ));
     }
 
